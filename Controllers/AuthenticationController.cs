@@ -15,14 +15,14 @@ namespace HospitalApi.Controllers
             _context = Hospital;
         }
         [HttpPost("Authorization")]
-        public IActionResult AuthDoctor(string loginDoctor, string passwordDoctor)
+        public IActionResult AuthDoctor(string login, string password)
         {
-            Personals? personal = _context.Personal.SingleOrDefault(p => p.Login == loginDoctor);
+            Personals? personal = _context.Personal.SingleOrDefault(p => p.Login == login);
             if (personal != null)
             {
-                if (Verify(passwordDoctor, personal.Password) == true)
+                if (Verify(password, personal.PasswordSalt, personal.Password) == true)
                 {
-                    return StatusCode(200);
+                    return Ok(new { Role = personal.Role });
                 }
                 return StatusCode(400);
             }
@@ -31,19 +31,26 @@ namespace HospitalApi.Controllers
         [HttpPost("Registration")]
         public async Task<IActionResult> RegistrationDoctor(Personals personal)
         {
-            personal.Password = Generate(personal.Password);
+            (string hashedPassword, string salt) = Generate(personal.Password);
+            personal.Password = hashedPassword;
+            personal.PasswordSalt = salt;
             _context.Personal.Add(personal);
             await _context.SaveChangesAsync();
             return StatusCode(201);
         }
         [ApiExplorerSettings(IgnoreApi = true)]
-        public bool Verify(string password, string passwordHash)
+        public bool Verify(string password, string salt, string passwordHash)
         {
-            bool result = BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash, HashType.SHA256);
-            return result;
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt);
+            return (hashedPassword.Trim() == passwordHash.Trim());
         }
+
         [ApiExplorerSettings(IgnoreApi = true)]
-        public string Generate(string password) =>
-            BCrypt.Net.BCrypt.EnhancedHashPassword(password, HashType.SHA256);
+        public (string, string) Generate(string password)
+        {
+            string salt = BCrypt.Net.BCrypt.GenerateSalt();
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt);
+            return (hashedPassword, salt);
+        }
     }
 }

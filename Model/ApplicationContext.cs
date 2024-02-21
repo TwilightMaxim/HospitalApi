@@ -9,5 +9,6 @@ namespace HospitalApi.Model
         public DbSet<Hospitalization> HospitalizationHistory { get; set; }
         public DbSet<DiagnosticMeasure> DiagnosticMeasures { get; set; }
         public DbSet<Personals> Personal { get; set; }
+        public DbSet<Schedules> Schedule { get; set; }
     }
 }
