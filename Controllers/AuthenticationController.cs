@@ -14,8 +14,14 @@ namespace HospitalApi.Controllers
         {
             _context = Hospital;
         }
+        /// <summary>
+        /// Метод авторизации пользователя
+        /// </summary>
+        /// <param name="login"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         [HttpPost("Authorization")]
-        public IActionResult AuthDoctor(string login, string password)
+        public IActionResult Auth(string login, string password)
         {
             Personals? personal = _context.Personal.SingleOrDefault(p => p.Login == login);
             if (personal != null)
@@ -28,6 +34,11 @@ namespace HospitalApi.Controllers
             }
             return BadRequest("Неправильный логин или пароль");
         }
+        /// <summary>
+        /// Метод регестрации пользователя
+        /// </summary>
+        /// <param name="personal"></param>
+        /// <returns></returns>
         [HttpPost("Registration")]
         public async Task<IActionResult> RegistrationDoctor(Personals personal)
         {
@@ -38,13 +49,24 @@ namespace HospitalApi.Controllers
             await _context.SaveChangesAsync();
             return StatusCode(201);
         }
+        /// <summary>
+        /// Верефикация зашифровоного пароля пользователя
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="salt"></param>
+        /// <param name="passwordHash"></param>
+        /// <returns></returns>
         [ApiExplorerSettings(IgnoreApi = true)]
         public bool Verify(string password, string salt, string passwordHash)
         {
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt);
             return (hashedPassword.Trim() == passwordHash.Trim());
         }
-
+        /// <summary>
+        /// Метод генерации зашифровонного пароля пользователя
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
         [ApiExplorerSettings(IgnoreApi = true)]
         public (string, string) Generate(string password)
         {

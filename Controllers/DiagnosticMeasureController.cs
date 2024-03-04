@@ -12,6 +12,11 @@ namespace HospitalApi.Controllers
         {
             _context = Hospital;
         }
+        /// <summary>
+        /// Поиск пациента по медкарте
+        /// </summary>
+        /// <param name="medicalCardNumber"></param>
+        /// <returns></returns>
         [HttpPost("SearchPatients")]
         public IActionResult ImformationPatients(string? medicalCardNumber)
         {

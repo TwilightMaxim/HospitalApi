@@ -14,6 +14,10 @@ namespace HospitalApi.Controllers
         {
             _context = Hospital;
         }
+        /// <summary>
+        /// Метод отправки расписания работы
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("Schedules")]
         public async Task<IActionResult> GetSchedules()
         {

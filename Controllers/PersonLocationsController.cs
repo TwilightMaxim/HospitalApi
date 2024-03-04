@@ -14,6 +14,10 @@ namespace HospitalApi.Controllers
         private static List<string> PersonRoles = new List<string> { "Клиент", "Сотрудник" };
         private static List<int> LastSecurityPointNumbers = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 };
         private static List<string> LastSecurityPointDirections = new List<string> { "in", "out" };
+        /// <summary>
+        /// Метод отправки данных для отображения клиентов и сотрудников
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("Locations")]
         public IActionResult LocationsPerson()
         {
